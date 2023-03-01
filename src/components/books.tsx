@@ -1,44 +1,33 @@
 import Link from "next/link";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { get_books } from "../store/actions/books";
 import { useEffect, useState } from "react";
 import BookRow from "./BookRow";
 
-const Books = ({ get_books, books }) => {
+const Books = () => {
   const [formData, setFormData] = useState({
     title: "",
     order: "desc",
   });
 
+  const dispatch = useDispatch();
+  const booksListData = useSelector((state) => state.booksData);
+  const { books } = booksListData;
+
   useEffect(() => {
-    get_books();
-  }, []);
+    dispatch(get_books());
+  }, [dispatch]);
 
   const showBooks = () => {
-    let results = [];
     let display = [];
 
     if (books && books !== null && books !== undefined) {
       books.map((book, index) => {
-        return display.push(
-          <div key={index}>
-            <BookRow book={book} />
-          </div>
-        );
+        return display.push(<BookRow key={index} book={book} />);
       });
     }
 
-    for (let i = 0; i < display.length; i += 3) {
-      results.push(
-        <div key={i} className="grid md:grid-cols-3 ">
-          {display[i] ? display[i] : <div className=""></div>}
-          {display[i + 1] ? display[i + 1] : <div className=""></div>}
-          {display[i + 2] ? display[i + 2] : <div className=""></div>}
-        </div>
-      );
-    }
-
-    return results;
+    return display;
   };
 
   return (
@@ -193,10 +182,4 @@ const Books = ({ get_books, books }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  books: state.Books.books,
-});
-
-export default connect(mapStateToProps, {
-  get_books,
-})(Books);
+export default Books;
