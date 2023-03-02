@@ -9,6 +9,20 @@ import {
   FILTER_BOOKS_SUCCESS,
   FILTER_BOOKS_FAIL,
 } from "../types";
+import { useQuery, gql } from "@apollo/client";
+
+const GET_BOOKS = gql`
+  query GetBooks {
+    books {
+      id
+      title
+      isbn
+      description
+      year
+      photo
+    }
+  }
+`;
 
 export const get_books = () => async (dispatch) => {
   const config = {
@@ -18,27 +32,12 @@ export const get_books = () => async (dispatch) => {
   };
 
   try {
-    const res = {
-      status: 200,
-      data: {
-        books: [
-          {
-            id: 1,
-          },
-          {
-            id: 2,
-          },
-          {
-            id: 3,
-          },
-        ],
-      },
-    };
+    const { loading, error, data } = await useQuery(GET_BOOKS);
 
-    if (res.status === 200) {
+    if (error) {
       dispatch({
         type: GET_BOOKS_SUCCESS,
-        payload: res.data,
+        payload: data,
       });
     } else {
       dispatch({
@@ -60,15 +59,12 @@ export const get_book = (bookId) => async (dispatch) => {
   };
 
   try {
-    const res = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/BOOKS/BOOKS/${BOOKSId}`,
-      config
-    );
+    const { loading, error, data } = await useQuery(GET_BOOKS);
 
-    if (res.status === 200) {
+    if (error) {
       dispatch({
         type: GET_BOOKS_SUCCESS,
-        payload: res.data,
+        payload: data,
       });
     } else {
       dispatch({
