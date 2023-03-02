@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { gql, useMutation } from "@apollo/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useRouter } from "next/router";
 
 const StyledForm = styled.form``;
 
@@ -15,15 +16,49 @@ const CREATE_AUTHOR = gql`
     $birthdate: String!
     $photo: String
   ) {
-    createAuthor(data: { message: "", name: $name }) {
+    createAuthor(
+      data: { message: "Create author successfully...!", name: $name }
+    ) {
+      id
+    }
+  }
+`;
+
+const UPDATE_AUTHOR = gql`
+  mutation UpdateAuthor(
+    $name: String!
+    $lastname: String!
+    $about: String!
+    $birthdate: String!
+    $photo: String
+  ) {
+    updateAuthor(
+      id: $id
+      data: {
+        message: "Update author successfully...!"
+        name: $name
+        lastname: $lastname
+      }
+    ) {
       id
     }
   }
 `;
 
 const AddAuthor = () => {
+  const router = useRouter();
+  const id = router.query.id as string;
+
   const [createAuthor] = useMutation(CREATE_AUTHOR);
-  const [author, setAuthor] = useState({});
+  const [updateAuthor] = useMutation(UPDATE_AUTHOR);
+
+  const [author, setAuthor] = useState({
+    name: "",
+    lastname: "",
+    about: "",
+    birthdate: "",
+    photo: "",
+  });
 
   const handleOnChange = (e) => {
     setAuthor({ ...author, [e.target.name]: e.target.value });
@@ -31,9 +66,20 @@ const AddAuthor = () => {
   };
 
   const handleSubmit = (e) => {
-    createAuthor({ variables: { ...author } });
-    e.preventDefault();
+    try {
+      if (id) {
+        updateAuthor({ variables: { ...author } });
+        e.preventDefault();
+      } else {
+        createAuthor({ variables: { ...author } });
+        e.preventDefault();
+      }
+    } catch (err) {
+      console.log("Error: Connect to api graphql server.");
+    }
   };
+
+  const { name, lastname, about, birthdate, photo } = author;
 
   return (
     <StyledForm onSubmit={handleSubmit}>
@@ -52,6 +98,7 @@ const AddAuthor = () => {
                   type="file"
                   onChange={handleOnChange}
                   name="photo"
+                  value={photo}
                   className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
                   multiple
                 />
@@ -64,6 +111,7 @@ const AddAuthor = () => {
                   type="text"
                   onChange={handleOnChange}
                   name="name"
+                  value={name}
                   className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
                 />
               </StyledLabel>
@@ -75,6 +123,7 @@ const AddAuthor = () => {
                   type="text"
                   onChange={handleOnChange}
                   name="lastname"
+                  value={lastname}
                   className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
                 />
               </StyledLabel>
@@ -86,6 +135,7 @@ const AddAuthor = () => {
                   className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
                   onChange={handleOnChange}
                   name="about"
+                  value={about}
                   placeholder="Sobre el autor..."
                 ></textarea>
               </StyledLabel>
@@ -97,6 +147,7 @@ const AddAuthor = () => {
                   type="date"
                   onChange={handleOnChange}
                   name="birthdate"
+                  value={birthdate}
                   className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
                 />
               </StyledLabel>

@@ -1,17 +1,16 @@
+import * as dotenv from "dotenv";
 import "@/styles/globals.css";
 import { FC } from "react";
 import type { AppProps } from "next/app";
 import { wrapper } from "../store/store";
 import { Provider } from "react-redux";
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider,
-  gql,
-} from "@apollo/client";
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+
+const url =
+  process.env.HOST_GRAPHQL_SERVER || "https://flyby-router-demo.herokuapp.com/";
 
 const client = new ApolloClient({
-  uri: "https://flyby-router-demo.herokuapp.com/",
+  uri: url,
   cache: new InMemoryCache(),
 });
 

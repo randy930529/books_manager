@@ -74,7 +74,7 @@ const BookRow = ({ book }) => {
               />
             </svg>
           </button>
-          <Link x-data="{ tooltip: 'Edite' }" href="/addBook">
+          <Link x-data="{ tooltip: 'Edite' }" href={`/addBook?id=${book.id}`}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { gql, useMutation } from "@apollo/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const StyledForm = styled.form``;
@@ -16,24 +17,71 @@ const CREATE_BOOK = gql`
     $year: Int!
     $photo: String!
   ) {
-    createBook(data: { message: "", title: $title }) {
+    createBook(
+      data: { message: "Create book successfully...!", title: $title }
+    ) {
+      id
+    }
+  }
+`;
+
+const UPDATE_BOOK = gql`
+  mutation UpdateBook(
+    $title: String!
+    $author: String!
+    $isbn: String!
+    $description: String!
+    $year: Int!
+    $photo: String!
+  ) {
+    updateBook(
+      id: $id
+      data: {
+        message: "Update book successfully...!"
+        title: $title
+        author: $author
+      }
+    ) {
       id
     }
   }
 `;
 
 const AddBook = () => {
+  const router = useRouter();
+  const id = router.query.id as string;
+
   const [createBook] = useMutation(CREATE_BOOK);
-  const [book, setBook] = useState({});
+  const [updateBook] = useMutation(UPDATE_BOOK);
+
+  const [book, setBook] = useState({
+    photo: "",
+    title: "",
+    author: "",
+    isbn: "",
+    description: "",
+    year: "",
+  });
 
   const handleOnChange = (e) => {
     setBook({ ...book, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
-    createBook({ variables: { ...book } });
-    e.preventDefault();
+    try {
+      if (id) {
+        updateBook({ variables: { ...book } });
+        e.preventDefault();
+      } else {
+        createBook({ variables: { ...book } });
+        e.preventDefault();
+      }
+    } catch (err) {
+      console.log("Error: Connect to api graphql server.");
+    }
   };
+
+  const { photo, title, author, isbn, description, year } = book;
 
   return (
     <StyledForm onSubmit={handleSubmit}>
@@ -52,6 +100,7 @@ const AddBook = () => {
                   type="file"
                   onChange={handleOnChange}
                   name="photo"
+                  value={photo}
                   className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
                   multiple
                 />
@@ -64,6 +113,7 @@ const AddBook = () => {
                   type="text"
                   onChange={handleOnChange}
                   name="title"
+                  value={title}
                   className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
                 />
               </StyledLabel>
@@ -75,6 +125,7 @@ const AddBook = () => {
                   type="text"
                   onChange={handleOnChange}
                   name="author"
+                  value={author}
                   className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
                 />
               </StyledLabel>
@@ -86,6 +137,7 @@ const AddBook = () => {
                   type="text"
                   onChange={handleOnChange}
                   name="isbn"
+                  value={isbn}
                   className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
                 />
               </StyledLabel>
@@ -96,6 +148,7 @@ const AddBook = () => {
                 <textarea
                   onChange={handleOnChange}
                   name="description"
+                  value={description}
                   className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
                   placeholder="Breve descripción del libro..."
                 ></textarea>
@@ -108,6 +161,7 @@ const AddBook = () => {
                   type="text"
                   onChange={handleOnChange}
                   name="year"
+                  value={year}
                   className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
                   pattern="[0-9]{1,4}"
                 />
