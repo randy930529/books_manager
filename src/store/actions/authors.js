@@ -1,4 +1,3 @@
-import axios from "axios";
 import {
   GET_AUTHORS_SUCCESS,
   GET_AUTHORS_FAIL,
@@ -7,6 +6,20 @@ import {
   FILTER_AUTHORS_SUCCESS,
   FILTER_AUTHORS_FAIL,
 } from "../types";
+import { useQuery, gql } from "@apollo/client";
+
+const GET_AUTHORS = gql`
+  query GetAuthors {
+    authors {
+      id
+      name
+      lastname
+      about
+      birthdate
+      photo
+    }
+  }
+`;
 
 export const get_authors = () => async (dispatch) => {
   const config = {
@@ -16,27 +29,12 @@ export const get_authors = () => async (dispatch) => {
   };
 
   try {
-    const res = {
-      status: 200,
-      data: {
-        authors: [
-          {
-            id: 1,
-          },
-          {
-            id: 2,
-          },
-          {
-            id: 3,
-          },
-        ],
-      },
-    };
+    const { loading, error, data } = await useQuery(GET_AUTHORS);
 
-    if (res.status === 200) {
+    if (error === 200) {
       dispatch({
         type: GET_AUTHORS_SUCCESS,
-        payload: res.data,
+        payload: data,
       });
     } else {
       dispatch({
@@ -58,15 +56,12 @@ export const get_author = (authorId) => async (dispatch) => {
   };
 
   try {
-    const res = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/AUTHORS/AUTHORS/${AUTHORSId}`,
-      config
-    );
+    const { loading, error, data } = await useQuery(GET_AUTHORS);
 
-    if (res.status === 200) {
+    if (error === 200) {
       dispatch({
         type: GET_AUTHORS_SUCCESS,
-        payload: res.data,
+        payload: data,
       });
     } else {
       dispatch({
