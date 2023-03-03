@@ -121,6 +121,7 @@ const Books = () => {
           </thead>
           <tbody className="divide-y divide-gray-100 border-t border-gray-100">
             {books && showBooks()}
+            <BookRow book={{}} />
           </tbody>
         </table>
       </div>

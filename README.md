@@ -10,7 +10,46 @@ First, config enviroment for Apollo GraphQL server:
 
 ```bash
 `uri> apollo server`
-HOST_GRAPHQL_SERVER==
+HOST_GRAPHQL_SERVER=
+```
+
+## Apollo server
+
+To learn more about Apollo Server, take a look at the following resources:
+
+- [Get started with Apollo Server](https://www.apollographql.com/docs/apollo-server/getting-started/) - learn about Apollo define your data set.
+
+Remplace schema:
+
+```bash
+{
+  type Book {
+    title: String
+    author: String
+    isbn: String
+    description: String
+    year: String
+    photo: String
+  }
+
+  type Author {
+    name: String
+    lastname: String
+    about: String
+    birthdate: Date
+    photo: String
+}
+
+  type Query {
+    books: [Book]
+    authors: [Author]
+  }
+
+  type Mutation {
+    createBook(title: String, author: String, isbn: String, description: String, year: String, photo: String): Book
+    createAuthor(name:String, lastname:String, about:String, birthdate:Date, photo:String): Author
+
+}
 ```
 
 ## Getting Started

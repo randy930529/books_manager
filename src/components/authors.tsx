@@ -88,6 +88,7 @@ const Authors = () => {
           </thead>
           <tbody className="divide-y divide-gray-100 border-t border-gray-100">
             {authors && showAUTHOR()}
+            <AuthorRow author={{}} />
           </tbody>
         </table>
       </div>

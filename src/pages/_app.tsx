@@ -6,8 +6,7 @@ import { wrapper } from "../store/store";
 import { Provider } from "react-redux";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 
-const url =
-  process.env.HOST_GRAPHQL_SERVER || "https://flyby-router-demo.herokuapp.com/";
+const url = process.env.HOST_GRAPHQL_SERVER || "http://localhost:4000/";
 
 const client = new ApolloClient({
   uri: url,

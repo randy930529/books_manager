@@ -13,7 +13,7 @@ const CREATE_AUTHOR = gql`
     $name: String!
     $lastname: String!
     $about: String!
-    $birthdate: String!
+    $birthdate: Date!
     $photo: String
   ) {
     createAuthor(
@@ -29,7 +29,7 @@ const UPDATE_AUTHOR = gql`
     $name: String!
     $lastname: String!
     $about: String!
-    $birthdate: String!
+    $birthdate: Date!
     $photo: String
   ) {
     updateAuthor(
@@ -62,7 +62,6 @@ const AddAuthor = () => {
 
   const handleOnChange = (e) => {
     setAuthor({ ...author, [e.target.name]: e.target.value });
-    console.log(author);
   };
 
   const handleSubmit = (e) => {

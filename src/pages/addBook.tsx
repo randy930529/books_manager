@@ -12,15 +12,21 @@ const CREATE_BOOK = gql`
   mutation CreateBook(
     $title: String!
     $author: String!
-    $isbn: String!
-    $description: String!
-    $year: Int!
-    $photo: String!
+    $isbn: String
+    $description: String
+    $year: String
+    $photo: String
   ) {
     createBook(
-      data: { message: "Create book successfully...!", title: $title }
+      title: $title
+      author: $author
+      isbn: $isbn
+      description: $description
+      year: $year
+      photo: $photo
     ) {
-      id
+      title
+      author
     }
   }
 `;
@@ -31,7 +37,7 @@ const UPDATE_BOOK = gql`
     $author: String!
     $isbn: String!
     $description: String!
-    $year: Int!
+    $year: String!
     $photo: String!
   ) {
     updateBook(
@@ -51,7 +57,7 @@ const AddBook = () => {
   const router = useRouter();
   const id = router.query.id as string;
 
-  const [createBook] = useMutation(CREATE_BOOK);
+  const [createBook, { data, loading, error }] = useMutation(CREATE_BOOK);
   const [updateBook] = useMutation(UPDATE_BOOK);
 
   const [book, setBook] = useState({
@@ -70,11 +76,15 @@ const AddBook = () => {
   const handleSubmit = (e) => {
     try {
       if (id) {
+        e.preventDefault();
         updateBook({ variables: { ...book } });
-        e.preventDefault();
       } else {
-        createBook({ variables: { ...book } });
         e.preventDefault();
+        createBook({
+          variables: {
+            ...book,
+          },
+        });
       }
     } catch (err) {
       console.log("Error: Connect to api graphql server.");
