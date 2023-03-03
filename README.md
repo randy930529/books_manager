@@ -21,8 +21,7 @@ To learn more about Apollo Server, take a look at the following resources:
 
 Remplace schema:
 
-```bash
-{
+```
   type Book {
     title: String
     author: String
