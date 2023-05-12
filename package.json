@@ -2,32 +2,31 @@
   "name": "books_manager",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "server": "node index.js"
   },
   "dependencies": {
-    "@apollo/client": "^3.7.9",
+    "@apollo/client": "^3.7.12",
     "@heroicons/react": "^2.0.16",
     "@types/node": "18.14.2",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
+    "apollo-server": "^3.12.0",
     "dotenv": "^16.0.3",
     "eslint": "8.35.0",
     "eslint-config-next": "13.2.1",
     "graphql": "^16.6.0",
     "next": "13.2.1",
-    "next-redux-wrapper": "^8.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-redux": "^8.0.5",
-    "redux": "^4.2.1",
-    "redux-devtools-extension": "^2.13.9",
-    "redux-thunk": "^2.4.2",
     "styled-components": "^5.3.8",
-    "typescript": "4.9.5"
+    "typescript": "4.9.5",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",

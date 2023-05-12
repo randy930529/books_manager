@@ -1,23 +1,29 @@
 import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
-import { get_authors } from "../store/actions/authors";
 import { useEffect, useState } from "react";
 import AuthorRow from "./AuthorRow";
+import { useQuery, gql } from "@apollo/client";
+
+const GET_AUTHORS = gql`
+  query {
+    allAuthors {
+      id
+      name
+      birthDate
+      lastName
+    }
+  }
+`;
 
 const Authors = () => {
-  const dispatch = useDispatch();
-  const authorsListData = useSelector((state) => state.authorsData);
-  const { authors } = authorsListData;
+  const { data } = useQuery(GET_AUTHORS);
 
-  useEffect(() => {
-    dispatch(get_authors());
-  }, [dispatch]);
+  useEffect(() => {}, []);
 
   const showAUTHOR = () => {
     let display = [];
 
-    if (authors && authors !== null && authors !== undefined) {
-      authors.map((author, index) => {
+    if (data && data !== null && data !== undefined) {
+      data.allAuthors.map((author, index) => {
         return display.push(<AuthorRow key={index} author={author} />);
       });
     }
@@ -87,8 +93,7 @@ const Authors = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-            {authors && showAUTHOR()}
-            <AuthorRow author={{}} />
+            {data && showAUTHOR()}
           </tbody>
         </table>
       </div>

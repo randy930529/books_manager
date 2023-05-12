@@ -5,8 +5,14 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import bookImg from "../../public/img/book.png";
 
 const DELETE_BOOK = gql`
-  mutation DeleteBook($id: String!) {
-    deleteBook(id: $id)
+  mutation DeleteBook($id: ID!) {
+    deleteBook(id: $id) {
+      title
+      year
+      author {
+        name
+      }
+    }
   }
 `;
 

@@ -1,28 +1,36 @@
 import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
-import { get_books } from "../store/actions/books";
 import { useEffect, useState } from "react";
 import BookRow from "./BookRow";
+import { useQuery, gql } from "@apollo/client";
+
+const GET_BOOKS = gql`
+  query {
+    allBooks {
+      id
+      title
+      year
+      isbn
+      author {
+        name
+      }
+    }
+  }
+`;
 
 const Books = () => {
   const [formData, setFormData] = useState({
     title: "",
     order: "desc",
   });
+  const { data } = useQuery(GET_BOOKS);
 
-  const dispatch = useDispatch();
-  const booksListData = useSelector((state) => state.booksData);
-  const { books } = booksListData;
-
-  useEffect(() => {
-    dispatch(get_books());
-  }, [dispatch]);
+  useEffect(() => {}, []);
 
   const showBooks = () => {
     let display = [];
 
-    if (books && books !== null && books !== undefined) {
-      books.map((book, index) => {
+    if (data && data !== null && data !== undefined) {
+      data.allBooks.map((book, index) => {
         return display.push(<BookRow key={index} book={book} />);
       });
     }
@@ -120,8 +128,7 @@ const Books = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-            {books && showBooks()}
-            <BookRow book={{}} />
+            {data && showBooks()}
           </tbody>
         </table>
       </div>

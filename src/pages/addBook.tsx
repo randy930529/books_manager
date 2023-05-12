@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { gql, useMutation } from "@apollo/client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 
 const StyledForm = styled.form``;
@@ -12,9 +12,9 @@ const CREATE_BOOK = gql`
   mutation CreateBook(
     $title: String!
     $author: String!
-    $isbn: String
+    $isbn: String!
     $description: String
-    $year: String
+    $year: String!
     $photo: String
   ) {
     createBook(
@@ -26,29 +26,30 @@ const CREATE_BOOK = gql`
       photo: $photo
     ) {
       title
-      author
+      author {
+        name
+      }
     }
   }
 `;
 
 const UPDATE_BOOK = gql`
   mutation UpdateBook(
-    $title: String!
-    $author: String!
-    $isbn: String!
-    $description: String!
-    $year: String!
-    $photo: String!
+    $title: String
+    $author: String
+    $isbn: String
+    $description: String
+    $year: String
+    $photo: String
+    $id: ID!
   ) {
-    updateBook(
-      id: $id
-      data: {
-        message: "Update book successfully...!"
-        title: $title
-        author: $author
+    updateBook(id: $id) {
+      title
+      author {
+        name
       }
-    ) {
-      id
+      isbn
+      year
     }
   }
 `;
@@ -74,24 +75,37 @@ const AddBook = () => {
   };
 
   const handleSubmit = (e) => {
+    e.preventDefault();
     try {
       if (id) {
-        e.preventDefault();
         updateBook({ variables: { ...book } });
       } else {
-        e.preventDefault();
         createBook({
           variables: {
             ...book,
+            id: id,
           },
         });
       }
+
+      window.scrollTo(0, 0);
+      setBook({
+        photo: "",
+        title: "",
+        author: "",
+        isbn: "",
+        description: "",
+        year: "",
+      });
     } catch (err) {
       console.log("Error: Connect to api graphql server.");
     }
   };
 
   const { photo, title, author, isbn, description, year } = book;
+
+  if (loading) return "Submitting...";
+  if (error) return `Submission error! ${error.message}`;
 
   return (
     <StyledForm onSubmit={handleSubmit}>
@@ -138,6 +152,25 @@ const AddBook = () => {
                   value={author}
                   className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
                 />
+                <select
+                  name="author"
+                  onChange={handleOnChange}
+                  defaultValue={""}
+                  className="font-semibold text-sm text-gray-600 pb-1 block"
+                >
+                  <option
+                    value={"NameAuthor"}
+                    className="font-semibold text-sm text-gray-600 pb-1 block"
+                  >
+                    Product1 : Electronics{" "}
+                  </option>
+                  <option
+                    value={"NameAuthor"}
+                    className="font-semibold text-sm text-gray-600 pb-1 block"
+                  >
+                    Product2 : Sports{" "}
+                  </option>
+                </select>
               </StyledLabel>
               <StyledLabel>
                 <label className="font-semibold text-sm text-gray-600 pb-1 block">
